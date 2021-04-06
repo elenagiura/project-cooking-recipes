@@ -1,0 +1,247 @@
+/* GENERAL */
+body {
+	margin: 0;
+	padding: 0;
+	color: #666;
+	font-family: Helvetica, serif;
+	font-size: 16px;
+	background-image: url('../img/background.jpg');
+	background-position: center;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+}
+
+.wrapper {
+	max-width: 1000px;
+	margin: 0 auto;
+}
+
+h1 {
+	margin-bottom: 50px;
+	color: #7aca25;
+	text-align: center;
+	text-transform: uppercase;
+	font-weight: normal;
+}
+
+h1::first-letter {
+	color: orange;
+}
+
+* {
+	box-sizing: border-box;
+	outline: none;
+}
+
+/* HEADER */
+
+header {
+	position: fixed;
+    top: 0;
+    width: 100%;
+    box-shadow: 0 0 4px 0 rgba(0,0,0,.2);
+    background-color: #fff;
+    z-index: 999;
+}
+
+header .wrapper {
+	display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#logo {
+	display: inline-block;
+	margin: 10px 0;
+	color: #7aca25;
+    font-family: Helvetica;
+    font-size: 34px;
+    text-decoration: none;
+}
+
+#logo::first-letter {
+	color: orange;
+}
+
+.recipe-count {
+    display: flex;
+    align-items: center;
+}
+
+.recipe-count-number {
+	color: orange;
+	font-size: 24px;
+}
+
+.recipe-count-label {
+    margin-left: 10px;
+	color: #666;
+	font-size: 12px;
+} 
+
+/* MAIN */
+main {
+	max-width: 1000px;
+	margin: 120px auto 60px;
+	padding: 30px 20px;
+	background-color: rgba(255, 255, 255, .9);
+}
+
+#food-form {
+	display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#food-form input,
+#food-form select {
+	width: 100%;
+    max-width: 600px;
+    height: 44px;
+    margin-bottom: 30px;
+    padding: 5px 10px;
+    color: #666;
+    font-size: 16px;
+    -webkit-appearance: none;
+    border: solid 1px #ccc;
+    border-radius: 0;
+}
+
+#food-form select {
+    background-image: url('../img/arrow.png');
+    background-size: 13px;
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+}
+
+#food-form .calories {
+    display: flex;
+    justify-content: space-between;
+}
+
+#food-form .calories input {
+    width: 45%;
+    text-align: center;
+}
+
+#food-form button {
+    padding: 10px 25px;
+    background-color: orange;
+    border: none;
+    text-transform: uppercase;
+    font-size: 18px;
+    color: #fff;
+    cursor: pointer;
+    transition: all .3s ease;
+}
+
+#food-form button:hover {
+	opacity: .8;
+}
+
+#food-form button:disabled {
+    opacity: .5;
+    cursor: default;
+}
+
+#recipes {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.recipe-element {
+	position: relative;
+    width: 22%;
+    margin-right: 4%;
+    margin-bottom: 20px;
+}
+
+.recipe-element h3 {
+	font-size: 15px;
+    min-height: 40px;
+    display: flex;
+    align-items: flex-end;
+}
+
+.recipe-element:nth-child(4n) {
+	margin-right: 0;
+}
+
+.recipe-element img {
+	display: block;
+    max-width: 100%;
+}
+
+.recipe-element .calories {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 80px;
+    right: 10px;
+    background: rgb(122, 202, 37);
+    color: #fff;
+    border-radius: 100%;
+    width: 40px;
+    height: 40px;
+    font-size: 12px;
+}
+
+.recipe-element .labels {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.recipe-element .labels .label {
+	margin-right: 5px;
+	margin-bottom: 5px;
+	padding: 2px 5px;
+	background: #fff;
+    color: orange;
+    border-radius: 4px;
+    font-size: 11px;
+}
+
+.pages {
+    display: flex;
+    justify-content: center;
+    margin:0 auto;
+}
+
+.pages a {
+    padding: 10px 15px;
+    font-weight: bold;
+    color:#ffa500;
+    background-color:#fff;
+    text-decoration: none;
+}
+
+.pages a:hover {
+    background-color: #ccc;
+}
+
+.pages a.active {
+    background-color: #ffa500;
+    color: #fff;
+}
+
+/* PLACEHOLDER STYLE */
+*::-webkit-input-placeholder { 
+  text-transform: uppercase;
+  color: #ccc;
+}
+
+*::-moz-placeholder {
+  text-transform: uppercase;
+  color: #ccc;
+}
+
+*:-ms-input-placeholder {
+  text-transform: uppercase;
+  color: #ccc;
+}
+
+*:-moz-placeholder { 
+  text-transform: uppercase;
+  color: #ccc;
+}
