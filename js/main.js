@@ -1,128 +1,63 @@
 //API tookens
-var appId = "2fd020ce";
-var appKey = "d9f136e83d480ade9525e2c3c9e5b83a";
-
+import {appId, appKey} from './api-tokens.js';
 //DOM
-var recipeCount = document.querySelector("header section span:first-child");
-var keywordInput = document.querySelector("section input.keyword-input");
-var health = document.querySelector("#food-form select:nth-child(2)");
-var diet = document.querySelector("#food-form select:nth-child(3)");
-var calMin = document.querySelector("#food-form div input:first-child");
-var calMax = document.querySelector("#food-form div input:last-child");
-var searchButton = document.querySelector(".search-button");
-var recipesMain = document.getElementById("recipes");
+import * as imported from './dom-elements.js'; //recipeCount, keywordInput, health, diet, calMin, calMax, searchButton, recipesMain
 
-//enabling search button
-keywordInput.addEventListener("input", function(){
-	if(keywordInput.value!=="") {
-		searchButton.removeAttribute("disabled");
-	} else if (keywordInput.value==="") {
-		searchButton.setAttribute("disabled","disabled");
-	}
-});
-
-//search for recipes
-searchButton.addEventListener("click", function(){
-	getRecipes(0,12);
-});
-
-function getRecipes(from, to) {
+//get recipes
+const getRecipes = (from, to, health, diet, calMin, calMax) => {
 	//cleaning recipes section and pages section
-	recipesMain.innerHTML="";
-	if(document.querySelector(".pages")!==null) {
-		document.querySelector(".pages").remove();
-	}
-
-	var url = "https://api.edamam.com/search?q="+keywordInput.value+"&app_id="+appId+"&app_key="+appKey+"&from="+from+"&to="+to;
-	var req = new XMLHttpRequest();
+	imported.recipesMain.innerHTML="";
+	document.querySelector(".pages")!== null ? document.querySelector(".pages").remove():null;
 	//checking calories values
-	if(calMin.value!=="" && calMax.value!==""){
-		if(parseInt(calMin.value)>parseInt(calMax.value)){
-			alert("Max calories value must be greater than min calories value!");
-		}
+	if(calMin!=="" && calMax!==""){
+		parseInt(calMin)>parseInt(calMax) ? alert("Max calories value must be greater than min calories value!"):null;
 	}
 
-	//possible search requests - problem if we pass empty string(for value of input) in url
-	// just query word is known
-	if (health.value==="" && diet.value==="" && calMin.value==="" && calMax.value==="") {
-		req.open("GET", url);
-	} else if (health.value==="" && diet.value==="" && calMax.value==="") {
-		req.open("GET", url+"&calories="+calMin.value+"-10000");
-	} else if (health.value==="" && diet.value==="" && calMin.value==="") {
-		req.open("GET", url+"&calories=0-"+calMax.value);
-	} else if (health.value==="" && diet.value==="") {
-		req.open("GET", url+"&calories="+calMin.value+"-"+calMax.value);
-	} //if health is selected 
-	else if (diet.value==="" && calMin.value==="" && calMax.value==="") {
-		req.open("GET", url+"&health="+health.value);
-	} else if (diet.value==="" && calMax.value==="") {
-		req.open("GET", url+"&health="+health.value+"&calories="+calMin.value+"-10000");
-	} else if (diet.value==="" && calMin.value==="") {
-		req.open("GET", url+"&health="+health.value+"&calories=0-"+calMax.value);
-	} else if (diet.value==="") {
-		req.open("GET", url+"&health="+health.value+"&calories="+calMin.value+"-"+calMax.value);
-	} //if diet is selected
-	else if (health.value==="" && calMin.value==="" && calMax.value==="") {
-		req.open("GET", url+"&diet="+diet.value);
-	} else if (health.value==="" && calMax.value==="") {
-		req.open("GET", url+"&diet="+diet.value+"&calories="+calMin.value+"-10000");
-	} else if (health.value==="" && calMin.value==="") {
-		req.open("GET", url+"&diet="+diet.value+"&calories=0-"+calMax.value);
-	} else if (health.value==="") {
-		req.open("GET", url+"&diet="+diet.value+"&calories="+calMin.value+"-"+calMax.value);
-	} //selected both health and diet
-	else if (calMin.value==="" && calMax.value==="") {
-		req.open("GET", url+"&diet="+diet.value+"&health="+health.value);
-	} else if (calMin.value==="") {
-		req.open("GET", url+"&diet="+diet.value+"&health="+health.value+"&calories=0-"+calMax.value);
-	} else if (calMax.value==="") {
-		req.open("GET", url+"&diet="+diet.value+"&health="+health.value+"&calories="+calMin.value+"-10000");
-	} else {
-		req.open("GET", url+"&diet="+diet.value+"&health="+health.value+"&calories="+calMin.value+"-"+calMax.value);
-	}
-	
-	req.onload = function() {
-		result = JSON.parse(req.responseText);
+	let url = `https://api.edamam.com/search?q=${imported.keywordInput.value}&app_id=${appId}&app_key=${appKey}&from=${from}
+	&to=${to}${diet!=="" ? '&diet='+diet:''}${health!=="" ? '&health='+health : ''}
+	&calories=${calMin!==""? calMin:calMin=0}-${calMax!==""? calMax:calMax=10000}`;
+
+	fetch(url)
+	.then(data => data.json())
+	.then(result => {
+		console.log(url);
 		console.log(result);
 		//displaying recipes count
-		recipeCount.textContent = result.count;
+		imported.recipeCount.textContent = result.count;
 		if(result.count===0) {
-			recipesMain.innerHTML="X no matching results";
+			imported.recipesMain.innerHTML="X no matching results";
 		} else {
 			//initial status
 			createBlockRec(result.hits);
 			//creating list of pages on the end of page
 			//problem with api - free version gives only 100 recepies :)
-			if(result.count>100) {
-				createPages(100);
-			} else {
-				createPages(result.count);
-			}
+			result.count>100 ? createPages(100):createPages(result.count);
+
 			//selecting active page
-			var pages = document.querySelectorAll("main>div>a");
+			const pages = document.querySelectorAll("main>div>a");
 			pages[from/12].classList.add("active");
 		}
-	}
-	req.send();
+	})
 }
 
+//structure 
 //section with results
-function createBlockRec(recipes){
-	var recipeSection = document.createElement("section");
+const createBlockRec = recipes => {
+	const recipeSection = document.createElement("section");
 	recipeSection.setAttribute("id","recipes");
-	for(var i=0; i<recipes.length; i++){
-		var recipeArtic = document.createElement("article");
+	for(let i=0; i<recipes.length; i++){
+		const recipeArtic = document.createElement("article");
 		recipeArtic.classList.add("recipe-element");
 
-		var heading = "<h3>"+recipes[i].recipe.label+"</h3>";
-		var image = "<img src='"+recipes[i].recipe.image+"'>";
-		var calPerMeal = "<span class='calories'>"+Math.round(recipes[i].recipe.calories/recipes[i].recipe.yield)+"</span>";
+		const heading = `<h3>${recipes[i].recipe.label}</h3>`;
+		const image = `<img src='${recipes[i].recipe.image}'>`;
+		const calPerMeal = `<span class='calories'>${Math.round(recipes[i].recipe.calories/recipes[i].recipe.yield)}</span>`;
 
-		var labels = document.createElement("div");
+		const labels = document.createElement("div");
 		labels.classList.add("labels");
 
-		for(var j=0; j<recipes[i].recipe.healthLabels.length; j++) {
-			var label = document.createElement("span");
+		for(let j=0; j<recipes[i].recipe.healthLabels.length; j++) {
+			const label = document.createElement("span");
 			label.classList.add("label");
 			label.textContent = recipes[i].recipe.healthLabels[j];
 			labels.appendChild(label);
@@ -133,26 +68,26 @@ function createBlockRec(recipes){
 
 		recipeSection.appendChild(recipeArtic);
 	}
-	recipesMain.appendChild(recipeSection);
+	imported.recipesMain.appendChild(recipeSection);
 }
 
 //construction of pages-options(1,2,3,4...) on the end of page
-function createPages(result) {
-	var pages = document.createElement("div");
+const createPages = result => {
+	const pages = document.createElement("div");
 	pages.classList.add("pages");
-	var numberOfPages = Math.ceil(result/12);
-	for(var i=1; i<=numberOfPages; i++){
-		var page = document.createElement("a");
+	const numberOfPages = Math.ceil(result/12);
+	for(let i=1; i<=numberOfPages; i++){
+		const page = document.createElement("a");
 		page.setAttribute("href","#recipes");
 		page.textContent=i;
 		//adding event on each page-option to display another group of results when it is clicked
-		page.addEventListener("click", function(){
+		page.addEventListener("click", () => {
 			//removing previous selected page
 			notActive();
-			if(parseInt(this.textContent)===numberOfPages) {
-				getRecipes(parseInt(this.textContent)*12-12,result);
+			if(i===numberOfPages) {
+				getRecipes(i*12-12,result, imported.health.value, imported.diet.value, imported.calMin.value, imported.calMax.value);
 			} else {
-				getRecipes(parseInt(this.textContent)*12-12,parseInt(this.textContent)*12);
+				getRecipes(i*12-12,i*12, imported.health.value, imported.diet.value, imported.calMin.value, imported.calMax.value);
 			}
 		});
 		pages.appendChild(page);
@@ -161,11 +96,17 @@ function createPages(result) {
 }
 
 //removing selected page
-function notActive(){
-	var pageList = document.querySelectorAll("main>div>a");
-	for(var i=0; i<pageList.length;i++){
-		if(pageList[i].classList.contains("active")) {
-			pageList[i].classList.remove("active");
-		}
+const notActive = () => {
+	const pageList = document.querySelectorAll("main>div>a");
+	for(let i=0; i<pageList.length;i++){
+		pageList[i].classList.contains("active") ? pageList[i].classList.remove("active"):null;
 	}
 }
+
+//enabling search button
+imported.keywordInput.addEventListener("input", () => (
+imported.keywordInput.value==="" ? imported.searchButton.setAttribute("disabled","disabled"):imported.searchButton.removeAttribute("disabled"))
+);
+
+//search for recipes
+imported.searchButton.addEventListener("click", () => getRecipes(0,12, imported.health.value, imported.diet.value, imported.calMin.value, imported.calMax.value));
