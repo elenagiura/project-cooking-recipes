@@ -12,10 +12,9 @@ Project is created with:
 * JavaScript ES6 - es6-version branch
 	
 ## Setup
-To run this project, install it locally using npm:
+To run this project, install it locally. All you need to do is to copy url of repo and type next command in Git Bash:
 
 ```
-$ cd ../lorem
-$ npm install
-$ npm start
+$ cd <location>
+$ git clone <url>
 ```
