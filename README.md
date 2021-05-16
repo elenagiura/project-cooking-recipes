@@ -7,9 +7,8 @@ Maximum number of displayed results for one page is twelve recipes.
 ## Technologies
 Project is created with:
 * HTML5
-* CSS
-* JavaScript ES5 - master branch
-* JavaScript ES6 - es6-version branch
+* CSS3
+* JavaScript ES5
 	
 ## Setup
 To run this project, install it locally. All you need to do is to copy url of repo and type next command in Git Bash:
@@ -18,10 +17,3 @@ To run this project, install it locally. All you need to do is to copy url of re
 $ cd <location>
 $ git clone <url>
 ```
-In case of running es-6 version branch, you need to run local server. For that you have to install node first, than just type next commands in Git Bash:
-```
-$ cd <project-folder>
-$ npm install -g http -server
-$ http-server 
-```
-Copy the url you got (for example: http://192.168.8.100:8080 ), and test the application :)
